@@ -37,6 +37,7 @@ public final class Siege extends JavaPlugin {
                 new SiegeTeam(new ArrayList<Player>(), "Defense")));
         this.getServer().getPluginManager().registerEvents(new Knight(), this);
         this.getServer().getPluginManager().registerEvents(new Berserker(), this);
+        this.getServer().getPluginManager().registerEvents(new Archer(), this);
         }
 
     @Override

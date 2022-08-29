@@ -28,6 +28,7 @@ public class Berserker implements Listener {
 
 
     public ArrayList<Entity> playersJumping = new ArrayList<>();
+    public HashMap<Player,Long> playerJump = new HashMap<>();
     public Berserker() {
 
     }
@@ -93,24 +94,38 @@ public class Berserker implements Listener {
         Vector playerVector = player.getLocation().getDirection();
 
         if(action.isRightClick() && playerInventory.getItemInMainHand().displayName().toString().contains("Jump")) {
-            player.setVelocity(playerVector.multiply(1.5));
-            this.getPlayersJumping().add(player);
+            if(!this.playerJump.containsKey(player)) {
+                player.setVelocity(playerVector.multiply(1.5));
+                Bukkit.broadcast(Component.text("Added player to list"));
+                this.playerJump.put(player, System.currentTimeMillis());
+            }
         }
     }
 
     @EventHandler
-    public void onMove(EntityMoveEvent event) {
-        Entity entity = event.getEntity();
-
-        if(this.getPlayersJumping().contains(entity)) {
-            Bukkit.broadcast(Component.text("dkjawdlkjawnd"));
-            entity.getLocation().createExplosion(1.0F, false, false);
-            this.getPlayersJumping().remove(entity);
+    public void onLand(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        Location location = player.getLocation();
+        if(!player.isOnGround()) {return;}
+        if(this.playerJump.containsKey(player) && System.currentTimeMillis() - this.playerJump.get(player) > 500) {
+            Bukkit.broadcast(Component.text("Jump Working!!!"));
+            //TODO SET BREAK BLOCKS TO FALSE FOR PROD; POSSIBLY CHANGE TO JUST AOE DAMAGE INSTEAD OF EXPLOSION
+            location.createExplosion(player, 2.0F, false, true);
+            this.playerJump.remove(player);
         }
+
     }
 
     public ArrayList<Entity> getPlayersJumping() {
         return playersJumping;
+    }
+
+    public HashMap<Player,Long> getPlayerJump() {
+        return playerJump;
+    }
+
+    public void setPlayerJump(HashMap<Player, Long> playerJump) {
+        this.playerJump = playerJump;
     }
 
     public void setPlayersJumping(ArrayList<Entity> playersJumping) {

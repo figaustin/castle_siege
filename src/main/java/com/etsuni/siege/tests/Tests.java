@@ -6,6 +6,7 @@ import com.etsuni.siege.classes.Knight;
 import com.etsuni.siege.classes.SiegeClassMenu;
 import com.etsuni.siege.matches.Match;
 import com.etsuni.siege.teams.SiegeTeam;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -47,7 +48,7 @@ public class Tests implements CommandExecutor {
                 player.openInventory(Siege.siegeClassMenu.openClassMenu());
             }
             else if(args[0].equalsIgnoreCase("getclassname")) {
-                Siege.siegeClassUtil.getPlayersSiegeClass(player);
+                player.sendMessage(Component.text(Siege.siegeClassUtil.getPlayersSiegeClass(player)));
             }
         }
         return false;
