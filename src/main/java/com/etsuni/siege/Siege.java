@@ -15,7 +15,7 @@ public final class Siege extends JavaPlugin {
     public static Knight knight;
     public static Archer archer;
     public static Berserker berserker;
-
+    public static Paladin paladin;
     public static SiegeClassMenu siegeClassMenu;
 
     public static SiegeClassUtil siegeClassUtil;
@@ -25,6 +25,8 @@ public final class Siege extends JavaPlugin {
         knight = new Knight();
         archer = new Archer();
         berserker = new Berserker();
+        paladin = new Paladin();
+
         siegeClassMenu = new SiegeClassMenu();
         siegeClassUtil = new SiegeClassUtil();
 
@@ -38,6 +40,7 @@ public final class Siege extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new Knight(), this);
         this.getServer().getPluginManager().registerEvents(new Berserker(), this);
         this.getServer().getPluginManager().registerEvents(new Archer(), this);
+        this.getServer().getPluginManager().registerEvents(new Paladin(), this);
         }
 
     @Override

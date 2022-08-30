@@ -58,7 +58,7 @@ public class Berserker implements Listener {
         playerInventory.addItem(item);
 
         item = new ItemStack(Material.ENCHANTED_BOOK);
-        meta.displayName(Component.text(ChatColor.LIGHT_PURPLE + "Jump"));
+        meta.displayName(Component.text(ChatColor.LIGHT_PURPLE + "Smash"));
         item.setItemMeta(meta);
         playerInventory.addItem(item);
 
@@ -74,6 +74,7 @@ public class Berserker implements Listener {
 
     @EventHandler
     public void castAbilityOne(PlayerInteractEvent event) {
+        //TODO MAKE THIS SPELL CLEANSE NEGATIVE EFFECTS ASWELL
         Action action = event.getAction();
         if(action.isLeftClick()) {return;}
         Player player = event.getPlayer();
@@ -93,7 +94,7 @@ public class Berserker implements Listener {
         PlayerInventory playerInventory = player.getInventory();
         Vector playerVector = player.getLocation().getDirection();
 
-        if(action.isRightClick() && playerInventory.getItemInMainHand().displayName().toString().contains("Jump")) {
+        if(action.isRightClick() && playerInventory.getItemInMainHand().displayName().toString().contains("Smash")) {
             if(!this.playerJump.containsKey(player)) {
                 player.setVelocity(playerVector.multiply(1.5));
                 Bukkit.broadcast(Component.text("Added player to list"));

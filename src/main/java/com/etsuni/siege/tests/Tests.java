@@ -35,6 +35,9 @@ public class Tests implements CommandExecutor {
             else if(args[0].equalsIgnoreCase("berserker")) {
                 Siege.berserker.giveKit(player);
             }
+            else if(args[0].equalsIgnoreCase("paladin")) {
+                Siege.paladin.giveKit(player);
+            }
             else if(args[0].equalsIgnoreCase("startmatch")) {
                 match.startMatch();
             }
