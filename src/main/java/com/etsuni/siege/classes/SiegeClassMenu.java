@@ -26,6 +26,8 @@ public class SiegeClassMenu implements Listener {
         Component knightTitle = Component.text(ChatColor.GOLD + "" + ChatColor.BOLD + "Knight");
         Component rangerTitle = Component.text(ChatColor.GREEN + "" + ChatColor.BOLD + "Ranger");
         Component berserkerTitle = Component.text(Color.RED + "" + ChatColor.BOLD + "Berserker");
+        Component paladinTitle = Component.text(Color.ORANGE + "" + ChatColor.BOLD + "Paladin");
+        Component assassinTitle = Component.text(Color.GRAY + "" + ChatColor.BOLD + "Assassin");
         ItemStack item = new ItemStack(Material.IRON_SWORD, 1);
         ItemMeta meta = item.getItemMeta();
 
@@ -48,6 +50,22 @@ public class SiegeClassMenu implements Listener {
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES);
         item.setItemMeta(meta);
         siegeClassMenu.setItem(23, item);
+
+        //Paladin
+        item = new ItemStack(Material.GOLDEN_CHESTPLATE);
+        meta.displayName(paladinTitle);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES);
+        item.setItemMeta(meta);
+        siegeClassMenu.setItem(24,item);
+
+        //Assassin
+        item = new ItemStack(Material.NETHERITE_SWORD);
+        meta.displayName(assassinTitle);
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS);
+        item.setItemMeta(meta);
+        siegeClassMenu.setItem(25, item);
+
+
         return siegeClassMenu;
     }
 
