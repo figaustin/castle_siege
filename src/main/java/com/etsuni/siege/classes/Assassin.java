@@ -83,6 +83,7 @@ public class Assassin implements Listener {
         if(action.isLeftClick() && this.invisiblePlayers.contains(player)) {
             this.invisiblePlayers.remove(player);
             player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
+
         }
     }
 }
