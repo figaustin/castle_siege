@@ -1,11 +1,7 @@
 package com.etsuni.siege.teams;
 
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.ArrayList;
 
@@ -19,30 +15,22 @@ public class SiegeTeam implements Listener {
         this.teamName = teamName;
     }
 
-    public void addPlayerToTeam(Player player) {
-        if(!this.getPlayersOnTeam().contains(player)) {
-            this.getPlayersOnTeam().add(player);
+    public void addPlayerToTeam(Player player, SiegeTeam siegeTeam) {
+        if(!siegeTeam.getPlayersOnTeam().contains(player)) {
+            ArrayList<Player> temp = siegeTeam.getPlayersOnTeam();
+            temp.add(player);
+            siegeTeam.setPlayersOnTeam(temp);
         }
     }
 
-    public void removePlayerFromTeam(Player player) {
-        this.getPlayersOnTeam().remove(player);
+    public void removePlayerFromTeam(Player player, SiegeTeam siegeTeam) {
+        ArrayList<Player> temp = siegeTeam.getPlayersOnTeam();
+        temp.remove(player);
+        siegeTeam.setPlayersOnTeam(temp);
     }
 
-
-    //Handles Friendly Fire
-    @EventHandler
-    public void onDamage(EntityDamageByEntityEvent event) {
-        Player damagee = (Player) event.getEntity();
-        Player damager = (Player) event.getDamager();
-
-        if(sameTeam(damagee, damager)) {
-            event.setCancelled(true);
-        }
-    }
-
-    public Boolean sameTeam(Player p1, Player p2) {
-        return this.getPlayersOnTeam().contains(p1) && this.getPlayersOnTeam().contains(p2);
+    public Boolean sameTeam(Player p1, Player p2, SiegeTeam siegeTeam) {
+        return siegeTeam.getPlayersOnTeam().contains(p1) && siegeTeam.getPlayersOnTeam().contains(p2);
     }
 
 

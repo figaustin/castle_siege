@@ -1,12 +1,13 @@
 package com.etsuni.siege.classes;
 
 import com.etsuni.siege.Siege;
+import de.slikey.effectlib.effect.ArcEffect;
+import de.slikey.effectlib.effect.ExplodeEffect;
+import de.slikey.effectlib.effect.VortexEffect;
+import de.slikey.effectlib.effect.WarpEffect;
 import io.papermc.paper.event.entity.EntityMoveEvent;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -110,8 +111,7 @@ public class Berserker implements Listener {
         if(!player.isOnGround()) {return;}
         if(this.playerJump.containsKey(player) && System.currentTimeMillis() - this.playerJump.get(player) > 500) {
             Bukkit.broadcast(Component.text("Jump Working!!!"));
-            //TODO SET BREAK BLOCKS TO FALSE FOR PROD; POSSIBLY CHANGE TO JUST AOE DAMAGE INSTEAD OF EXPLOSION
-            location.createExplosion(player, 2.0F, false, true);
+            //TODO ADD EFFECT AND DAMAGE CIRCLE
             this.playerJump.remove(player);
         }
 

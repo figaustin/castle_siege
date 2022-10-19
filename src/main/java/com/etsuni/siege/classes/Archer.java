@@ -167,6 +167,7 @@ public class Archer implements Listener {
         if(!item.getType().equals(Material.BOW)) {return;}
         if(item.getItemMeta().hasItemFlag(ItemFlag.HIDE_DYE)) {
             world.createExplosion(location, 3, false, false);
+            item.removeItemFlags(ItemFlag.HIDE_DYE);
         }
         arrow.remove();
 
@@ -178,7 +179,9 @@ public class Archer implements Listener {
         Action action = event.getAction();
         if(action.isLeftClick()){return;}
         Block block = event.getClickedBlock();
-
+        if(block == null) {
+            return;
+        }
 
         if(action.isRightClick() && block.getType().equals(Material.BARREL) && Siege.siegeClassUtil.getPlayersSiegeClass(player).equalsIgnoreCase("archer")){
             if(reloadCooldowns.containsKey(player.getUniqueId())) {

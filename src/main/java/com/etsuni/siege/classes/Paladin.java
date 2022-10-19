@@ -67,7 +67,6 @@ public class Paladin implements Listener {
         Player player = event.getPlayer();
         Action action = event.getAction();
         if(SiegeClassUtil.abilityDeny(player, action, "paladin") == false){
-            player.sendMessage("nope");
             return;
         }
         PlayerInventory playerInventory = player.getInventory();

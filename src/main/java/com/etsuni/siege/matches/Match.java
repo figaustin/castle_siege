@@ -26,14 +26,6 @@ public class Match implements Listener, CommandExecutor {
     private SiegeTeam attack;
     private SiegeTeam defense;
 
-    public Integer getLength() {
-        return length;
-    }
-
-    public void setLength(Integer length) {
-        this.length = length;
-    }
-
     private Integer length;
 
     public Match(Boolean inProgress, ArrayList<Player> playersInMatch, Integer length, SiegeTeam attack, SiegeTeam defense) {
@@ -44,14 +36,16 @@ public class Match implements Listener, CommandExecutor {
         this.defense = defense;
     }
 
-    public void startMatch() {
-        if(!this.getInProgress()) {
-            this.setInProgress(true);
-            this.attack = new SiegeTeam(new ArrayList<Player>(), "Attack");
-            this.defense = new SiegeTeam(new ArrayList<Player>(), "Defense");
+    public void startMatch(Match match) {
             BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
             Bukkit.broadcast(Component.text("Match Started"));
+            ArrayList<Player> pList = new ArrayList<>();
+            attack = new SiegeTeam(new ArrayList<>(), "Attack");
+            defense = new SiegeTeam(new ArrayList<>(), "Defense");
+            match = new Match(false, pList, 1000, attack, defense );
+
             scheduler.scheduleSyncDelayedTask(plugin, new Runnable() {
+
                 @Override
                 public void run() {
                     Bukkit.broadcast(Component.text("Match Stopped"));
@@ -60,19 +54,18 @@ public class Match implements Listener, CommandExecutor {
             }, this.getLength() );
 
         }
-    }
 
-    public void endMatch() {
-        if(this.getInProgress()) {
-            this.setInProgress(false);
+    public void endMatch(Match match) {
+        if(match.getInProgress()) {
+            match.setInProgress(false);
             World world = Bukkit.getWorld("world");
             Location location = new Location(world, 134, 85, 195);
 
-            for(Player player : getPlayersInMatch()){
+            for(Player player : match.getPlayersInMatch()){
                 player.teleport(location);
                 Bukkit.broadcast(Component.text("Test: Removed" + player.displayName() + "from match (player list)"));
             }
-            this.setPlayersInMatch(new ArrayList<Player>());
+            match.setPlayersInMatch(new ArrayList<Player>());
 
         }
     }
@@ -81,10 +74,10 @@ public class Match implements Listener, CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         if(command.getName().equalsIgnoreCase("attack")) {
-            this.attack.addPlayerToTeam(player);
+
         }
         else if (command.getName().equalsIgnoreCase("defense")) {
-            this.defense.addPlayerToTeam(player);
+
         }
         return false;
     }
@@ -121,5 +114,27 @@ public class Match implements Listener, CommandExecutor {
         this.playersInMatch = playersInMatch;
     }
 
+    public Integer getLength() {
+        return length;
+    }
 
+    public void setLength(Integer length) {
+        this.length = length;
+    }
+
+    public SiegeTeam getAttack() {
+        return attack;
+    }
+
+    public void setAttack(SiegeTeam attack) {
+        this.attack = attack;
+    }
+
+    public SiegeTeam getDefense() {
+        return defense;
+    }
+
+    public void setDefense(SiegeTeam defense) {
+        this.defense = defense;
+    }
 }
