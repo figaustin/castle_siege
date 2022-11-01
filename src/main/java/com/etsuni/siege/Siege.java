@@ -40,12 +40,6 @@ public final class Siege extends JavaPlugin {
         effectManager = new EffectManager(this);
 
         this.getCommand("siege").setExecutor(new Tests());
-        this.getCommand("attack").setExecutor(new Match(true, new ArrayList<Player>(), 100,
-                new SiegeTeam(new ArrayList<Player>(), "Attack"),
-                new SiegeTeam(new ArrayList<Player>(), "Defense")));
-        this.getCommand("defense").setExecutor(new Match(true, new ArrayList<Player>(), 100,
-                new SiegeTeam(new ArrayList<Player>(), "Attack"),
-                new SiegeTeam(new ArrayList<Player>(), "Defense")));
         this.getServer().getPluginManager().registerEvents(new Knight(), this);
         this.getServer().getPluginManager().registerEvents(new Berserker(), this);
         this.getServer().getPluginManager().registerEvents(new Archer(), this);

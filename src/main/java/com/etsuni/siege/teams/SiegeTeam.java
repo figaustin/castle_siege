@@ -2,6 +2,7 @@ package com.etsuni.siege.teams;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 
@@ -10,8 +11,8 @@ public class SiegeTeam implements Listener {
     private ArrayList<Player> playersOnTeam;
     private String teamName;
 
-    public SiegeTeam(ArrayList<Player> playersOnTeam, String teamName) {
-        this.playersOnTeam = playersOnTeam;
+    public SiegeTeam(String teamName) {
+        this.playersOnTeam = new ArrayList<>();
         this.teamName = teamName;
     }
 

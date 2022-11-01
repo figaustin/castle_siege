@@ -5,7 +5,3 @@ api-version: 1.19
 commands:
   siege:
     description: Yeah
-  attack:
-    description: Maybe
-  defense:
-    description: No
