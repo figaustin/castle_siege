@@ -1,6 +1,7 @@
 package com.etsuni.siege.tests;
 
 import com.etsuni.siege.Siege;
+import com.etsuni.siege.matches.Gamemode;
 import com.etsuni.siege.matches.Match;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
@@ -12,7 +13,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 
 public class Tests implements CommandExecutor {
-    public Match match = new Match();
+    public Match match = new Match(new Gamemode());
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Player player = (Player) sender;
@@ -35,7 +36,7 @@ public class Tests implements CommandExecutor {
                 Siege.assassin.giveKit(player);
             }
             else if(args[0].equalsIgnoreCase("startmatch")) {
-                match.startMatch(match);
+                match.startMatch();
             }
             else if(args[0].equalsIgnoreCase("join")) {
                 match.joinMatch(player);
@@ -57,6 +58,9 @@ public class Tests implements CommandExecutor {
             }
             else if(args[0].equalsIgnoreCase("attack")) {
                 match.getAttack().addPlayerToTeam(player, match.getAttack());
+            }
+            else if(args[0].equalsIgnoreCase("givepoints")) {
+                match.getAttack().setPoints(75);
             }
         }
         return false;

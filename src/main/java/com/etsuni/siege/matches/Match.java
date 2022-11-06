@@ -12,14 +12,16 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitTask;
 import org.checkerframework.checker.units.qual.A;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Match implements Listener, CommandExecutor {
+public class Match implements Listener {
 
     private Plugin plugin = Siege.getPlugin(Siege.class);
 
@@ -29,55 +31,67 @@ public class Match implements Listener, CommandExecutor {
     private SiegeTeam attack;
     private SiegeTeam defense;
 
-    private HashMap<SiegeTeam, Integer> teamsPoints;
 
     private Gamemode gamemode;
 
-    public Match() {
+    private int matchId;
+    private int pointsCounterId;
+
+    public Match(Gamemode gamemode) {
         this.inProgress = false;
         this.attack = new SiegeTeam("Attack");
         this.defense = new SiegeTeam("Defense");
-        this.teamsPoints = new HashMap<>();
         this.playersInMatch = new ArrayList<>();
+        this.gamemode = gamemode;
     }
 
-    public void startMatch(Match match) {
+    public void startMatch() {
         BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
         Bukkit.broadcast(Component.text("Match Started"));
         //TODO MAKE SOMETHING HAPPEN WHEN MATCH STARTS
-        match.setInProgress(true);
+        this.inProgress = true;
+        Integer maxPoints = this.gamemode.getMaxPoints();
 
-
-        scheduler.scheduleSyncDelayedTask(plugin, new Runnable() {
+        this.matchId = scheduler.scheduleSyncDelayedTask(plugin, new Runnable() {
                 @Override
                 public void run() {
                     Bukkit.broadcast(Component.text("Match Stopped"));
-                    endMatch(match);
+                    endMatch();
                 }
             }, 1000 ); // SWITCH TO GAMEMODE.LENGTH ? ??? ?
-        Bukkit.broadcast(Component.text("This is the message after delayed task"));
-        scheduler.scheduleSyncRepeatingTask(plugin, new Runnable() {
+
+        this.pointsCounterId = scheduler.scheduleSyncRepeatingTask(plugin, new Runnable() {
             @Override
             public void run() {
-                Bukkit.broadcast(Component.text("Counterrr"));
+                if(pointsChecker()) {
+                    Bukkit.broadcast(Component.text("Ended match due to points"));
+                    endMatch();
+                    scheduler.cancelTask(pointsCounterId);
+                    scheduler.cancelTask(matchId);
+                }
+                Bukkit.broadcast(Component.text("heyy!!! this is the pointsCounter thing!!!"));
             }
-        },10, 1000);
+        },10, 10);
 
         }
 
 
-    public void endMatch(Match match) {
-        if(match.getInProgress()) {
-            match.setInProgress(false);
+    public Boolean pointsChecker() {
+        return this.attack.getPoints() >= this.gamemode.getMaxPoints() ||
+                this.defense.getPoints() >= this.gamemode.getMaxPoints();
+    }
+    public void endMatch() {
+        if(this.inProgress) {
+            this.inProgress = false;
             World world = Bukkit.getWorld("world");
             Location location = new Location(world, 134, 85, 195);
 
-            for(Player player : match.getPlayersInMatch()){
+            for(Player player : this.playersInMatch){
                 player.teleport(location);
                 clearTeams();
                 Bukkit.broadcast(Component.text("Test: Removed" + player.displayName() + "from match (player list)"));
             }
-            match.clearTeams();
+            this.clearTeams();
 
         }
     }
@@ -93,21 +107,9 @@ public class Match implements Listener, CommandExecutor {
         defense.setPlayersOnTeam(defensePlayers);
     }
 
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        Player player = (Player) sender;
-        if(command.getName().equalsIgnoreCase("attack")) {
-            attack.addPlayerToTeam(player, attack);
-        }
-        else if (command.getName().equalsIgnoreCase("defense")) {
-            defense.addPlayerToTeam(player, defense);
-        }
-        return false;
-    }
-
     public void joinMatch(Player player) {
-        if(this.getInProgress()) {
-            this.getPlayersInMatch().add(player);
+        if(this.inProgress) {
+            this.playersInMatch.add(player);
             player.sendMessage(Component.text("You joined the match"));
         }else {
             player.sendMessage(Component.text("That match is not currently in progress"));
@@ -115,7 +117,7 @@ public class Match implements Listener, CommandExecutor {
     }
 
     public void leaveMatch(Player player) {
-        this.getPlayersInMatch().remove(player);
+        this.playersInMatch.remove(player);
         player.sendMessage(Component.text("You have left the match"));
     }
 
@@ -151,14 +153,6 @@ public class Match implements Listener, CommandExecutor {
         this.gamemode = gamemode;
     }
 
-    public HashMap<SiegeTeam, Integer> getTeamsPoints() {
-        return teamsPoints;
-    }
-
-    public void setTeamsPoints(HashMap<SiegeTeam, Integer> teamsPoints) {
-        this.teamsPoints = teamsPoints;
-    }
-
     public ArrayList<Player> getPlayersInMatch() {
         return playersInMatch;
     }
@@ -167,4 +161,19 @@ public class Match implements Listener, CommandExecutor {
         this.playersInMatch = playersInMatch;
     }
 
+    public int getMatchId() {
+        return matchId;
+    }
+
+    public void setMatchId(int matchId) {
+        this.matchId = matchId;
+    }
+
+    public int getPointsCounterId() {
+        return pointsCounterId;
+    }
+
+    public void setPointsCounterId(int pointsCounterId) {
+        this.pointsCounterId = pointsCounterId;
+    }
 }

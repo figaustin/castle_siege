@@ -11,6 +11,8 @@ public class SiegeTeam implements Listener {
     private ArrayList<Player> playersOnTeam;
     private String teamName;
 
+    private Integer points;
+
     public SiegeTeam(String teamName) {
         this.playersOnTeam = new ArrayList<>();
         this.teamName = teamName;
@@ -49,5 +51,13 @@ public class SiegeTeam implements Listener {
 
     public void setTeamName(String teamName) {
         this.teamName = teamName;
+    }
+
+    public Integer getPoints() {
+        return points;
+    }
+
+    public void setPoints(Integer points) {
+        this.points = points;
     }
 }

@@ -18,7 +18,7 @@ public class Gamemode {
     protected Integer length;
 
     public Gamemode () {
-
+        this.maxPoints = 75;
     }
 
     public String getGamemodeName() {
