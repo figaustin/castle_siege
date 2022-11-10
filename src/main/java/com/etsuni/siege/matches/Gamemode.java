@@ -3,8 +3,6 @@ package com.etsuni.siege.matches;
 
 import com.etsuni.siege.teams.SiegeTeam;
 
-import java.util.HashMap;
-
 public class Gamemode {
 
     protected String gamemodeName;
@@ -17,8 +15,12 @@ public class Gamemode {
 
     protected Integer length;
 
-    public Gamemode () {
-        this.maxPoints = 75;
+    protected SiegeTeam attack;
+    protected SiegeTeam defense;
+
+    public Gamemode() {
+        this.attack = new SiegeTeam("Attack");
+        this.defense = new SiegeTeam("Defense");
     }
 
     public String getGamemodeName() {
@@ -59,5 +61,21 @@ public class Gamemode {
 
     public void setLength(Integer length) {
         this.length = length;
+    }
+
+    public SiegeTeam getAttack() {
+        return attack;
+    }
+
+    public void setAttack(SiegeTeam attack) {
+        this.attack = attack;
+    }
+
+    public SiegeTeam getDefense() {
+        return defense;
+    }
+
+    public void setDefense(SiegeTeam defense) {
+        this.defense = defense;
     }
 }

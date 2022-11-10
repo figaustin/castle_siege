@@ -2,9 +2,9 @@ package com.etsuni.siege.teams;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class SiegeTeam implements Listener {
 
@@ -16,6 +16,7 @@ public class SiegeTeam implements Listener {
     public SiegeTeam(String teamName) {
         this.playersOnTeam = new ArrayList<>();
         this.teamName = teamName;
+        this.points = 0;
     }
 
     public void addPlayerToTeam(Player player, SiegeTeam siegeTeam) {
@@ -36,6 +37,16 @@ public class SiegeTeam implements Listener {
         return siegeTeam.getPlayersOnTeam().contains(p1) && siegeTeam.getPlayersOnTeam().contains(p2);
     }
 
+    public Boolean isPlayerOnTeam(Player player) {
+        ArrayList<Player> list = this.playersOnTeam;
+        UUID playerUUID = player.getUniqueId();
+        for(Player p : list) {
+            if(p.getUniqueId().equals(playerUUID)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public ArrayList<Player> getPlayersOnTeam() {
         return playersOnTeam;

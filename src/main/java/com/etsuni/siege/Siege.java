@@ -2,15 +2,12 @@ package com.etsuni.siege;
 
 import com.etsuni.siege.classes.*;
 import com.etsuni.siege.matches.Match;
-import com.etsuni.siege.teams.SiegeTeam;
+import com.etsuni.siege.matches.TDM;
+import com.etsuni.siege.menus.MatchesMenu;
 import com.etsuni.siege.tests.Tests;
-import com.sun.jndi.ldap.Ber;
 import de.slikey.effectlib.EffectManager;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.checkerframework.checker.units.qual.A;
 
-import java.util.ArrayList;
 
 public final class Siege extends JavaPlugin {
 
@@ -25,6 +22,9 @@ public final class Siege extends JavaPlugin {
     public static SiegeClassUtil siegeClassUtil;
 
     public static EffectManager effectManager;
+
+    public static MatchesMenu matchesMenu;
+
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -33,11 +33,17 @@ public final class Siege extends JavaPlugin {
         berserker = new Berserker();
         paladin = new Paladin();
         assassin = new Assassin();
+        matchesMenu = new MatchesMenu();
 
         siegeClassMenu = new SiegeClassMenu();
         siegeClassUtil = new SiegeClassUtil();
 
         effectManager = new EffectManager(this);
+
+        matchesMenu.createMenu();
+
+        //INITIALIZE MATCH LOOP
+        Match.gameLoop();
 
         this.getCommand("siege").setExecutor(new Tests());
         this.getServer().getPluginManager().registerEvents(new Knight(), this);
@@ -45,10 +51,16 @@ public final class Siege extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new Archer(), this);
         this.getServer().getPluginManager().registerEvents(new Paladin(), this);
         this.getServer().getPluginManager().registerEvents(new Assassin(), this);
+        this.getServer().getPluginManager().registerEvents(new MatchesMenu(), this);
+        this.getServer().getPluginManager().registerEvents(new TDM(), this);
+
+
         }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
     }
+
+
 }

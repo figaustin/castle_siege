@@ -1,8 +1,8 @@
 package com.etsuni.siege.tests;
 
 import com.etsuni.siege.Siege;
-import com.etsuni.siege.matches.Gamemode;
 import com.etsuni.siege.matches.Match;
+import com.etsuni.siege.matches.TDM;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,10 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 
-import java.util.ArrayList;
-
 public class Tests implements CommandExecutor {
-    public Match match = new Match(new Gamemode());
+    public Match match = new Match();
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Player player = (Player) sender;
@@ -36,7 +34,7 @@ public class Tests implements CommandExecutor {
                 Siege.assassin.giveKit(player);
             }
             else if(args[0].equalsIgnoreCase("startmatch")) {
-                match.startMatch();
+                match.startMatch(new TDM());
             }
             else if(args[0].equalsIgnoreCase("join")) {
                 match.joinMatch(player);
@@ -54,13 +52,16 @@ public class Tests implements CommandExecutor {
                 player.sendMessage(Component.text(match.getPlayersInMatch().toString()));
             }
             else if(args[0].equalsIgnoreCase("playersonattack")) {
-                player.sendMessage(Component.text(match.getAttack().getPlayersOnTeam().toString()));
+                player.sendMessage(Component.text(match.getGamemode().getAttack().getPlayersOnTeam().toString()));
             }
             else if(args[0].equalsIgnoreCase("attack")) {
-                match.getAttack().addPlayerToTeam(player, match.getAttack());
+                match.getGamemode().getAttack().addPlayerToTeam(player, match.getGamemode().getAttack());
             }
             else if(args[0].equalsIgnoreCase("givepoints")) {
-                match.getAttack().setPoints(75);
+                match.getGamemode().getAttack().setPoints(75);
+            }
+            else if(args[0].equalsIgnoreCase("openmatchmenu")) {
+                player.openInventory(Siege.matchesMenu.menu);
             }
         }
         return false;
