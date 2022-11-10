@@ -1,6 +1,4 @@
-# castle_siege
-
-Welcome to my Minecraft Custom Server Plugin/Mod Project!
+# Welcome to my Minecraft Custom Server Plugin/Mod Project!
 
 This Repo is private as to not release anything internal to players that will be using the server/plugin. Please do not share this to anyone!
 
