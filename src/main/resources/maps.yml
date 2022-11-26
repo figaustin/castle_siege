@@ -1,0 +1,5 @@
+maps:
+  castle:
+    name: Castle
+    gamemode: TDM
+    time: day

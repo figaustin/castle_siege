@@ -1,6 +1,5 @@
 package com.etsuni.siege.classes;
 
-import com.destroystokyo.paper.ParticleBuilder;
 import com.etsuni.siege.Siege;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
@@ -9,29 +8,26 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.MainHand;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+
 import java.util.Collection;
 
-public class Knight implements Listener {
+public class Knight extends SiegeClass implements Listener {
 
-    public Knight() {}
+    private CooldownManager cooldownManager;
+
+    public Knight(){
+        this.cooldownManager = new CooldownManager();
+    }
+
+
     public void giveKit(Player player) {
-        if(Siege.siegeClassUtil.playerClasses.containsKey(player)) {
-            Siege.siegeClassUtil.removePlayerFromSiegeClass(player);
-        }
-
-        Siege.siegeClassUtil.addPlayerToSiegeClass(player, "knight");
 
         PlayerInventory playerInventory = player.getInventory();
         playerInventory.clear();
@@ -52,12 +48,12 @@ public class Knight implements Listener {
         playerInventory.setBoots(item);
     }
 
+    //TODO MAKE ABILITIES USE SKILL BOOKS AND CHECK FOR THEM IN INVENTORY/MAIN HAND
     @EventHandler
-    public void castAbilityOne(PlayerInteractEvent event) {
+    public void abilityOne(PlayerInteractEvent event) {
         Action action = event.getAction();
-        if(action.isLeftClick()) {return;}
         Player player = event.getPlayer();
-        if(!Siege.siegeClassUtil.getPlayersSiegeClass(player).equalsIgnoreCase("knight")){return;}
+        if(!SiegeClassUtil.abilityCheck(player,action, SiegeClasses.KNIGHT)){return;}
         PlayerInventory playerInventory = player.getInventory();
 
         if(action.isRightClick() && playerInventory.getItemInMainHand().getType().equals(Material.REDSTONE)) {
@@ -68,12 +64,14 @@ public class Knight implements Listener {
         }
     }
 
+
+    //TODO WORK ON THIS ABILITY ; MAKE IT BETTER/ACTUALLY WORK
     @EventHandler
-    public void castAbilityTwo(PlayerInteractEvent event) {
+    public void abilityTwo(PlayerInteractEvent event) {
         Action action = event.getAction();
         if(action.isLeftClick()) {return;}
         Player player = event.getPlayer();
-        if(!Siege.siegeClassUtil.getPlayersSiegeClass(player).equalsIgnoreCase("knight")){return;}
+        if(!SiegeClassUtil.abilityCheck(player, action, SiegeClasses.KNIGHT)){return;}
         PlayerInventory playerInventory = player.getInventory();
         Location playerLocation = player.getLocation();
 
@@ -84,5 +82,10 @@ public class Knight implements Listener {
                 livingEntity.damage(5.0, player);
             }
         }
+    }
+
+    @EventHandler
+    public void ultimate(PlayerInteractEvent event) {
+
     }
 }

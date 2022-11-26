@@ -1,14 +1,7 @@
 package com.etsuni.siege.classes;
 
-import com.etsuni.siege.Siege;
-import de.slikey.effectlib.effect.ArcEffect;
-import de.slikey.effectlib.effect.ExplodeEffect;
-import de.slikey.effectlib.effect.VortexEffect;
-import de.slikey.effectlib.effect.WarpEffect;
-import io.papermc.paper.event.entity.EntityMoveEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,25 +15,21 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Berserker implements Listener {
+public class Berserker extends SiegeClass implements Listener {
 
+    //TODO ADD COOLDOWNS TO ABILITIES
 
-    public ArrayList<Entity> playersJumping = new ArrayList<>();
-    public HashMap<Player,Long> playerJump = new HashMap<>();
+    private CooldownManager cooldownManager;
+    private HashMap<Player,Long> playerJump;
+
     public Berserker() {
-
+        this.cooldownManager = new CooldownManager();
+        this.playerJump = new HashMap<>();
     }
 
     public void giveKit(Player player) {
-        if(Siege.siegeClassUtil.playerClasses.containsKey(player)) {
-            Siege.siegeClassUtil.removePlayerFromSiegeClass(player);
-        }
-
-        Siege.siegeClassUtil.addPlayerToSiegeClass(player, "berserker");
-
         PlayerInventory playerInventory = player.getInventory();
         playerInventory.clear();
         ItemStack item = new ItemStack(Material.IRON_AXE);
@@ -73,13 +62,15 @@ public class Berserker implements Listener {
         playerInventory.setBoots(item);
     }
 
+
+
     @EventHandler
-    public void castAbilityOne(PlayerInteractEvent event) {
-        //TODO MAKE THIS SPELL CLEANSE NEGATIVE EFFECTS ASWELL
+    public void abilityOne(PlayerInteractEvent event) {
         Action action = event.getAction();
-        if(action.isLeftClick()) {return;}
         Player player = event.getPlayer();
-        if(!Siege.siegeClassUtil.getPlayersSiegeClass(player).equalsIgnoreCase("berserker")){return;}
+        if(!SiegeClassUtil.abilityCheck(player,action, SiegeClasses.BERSERKER)) {
+            return;
+        }
         PlayerInventory playerInventory = player.getInventory();
         if(action.isRightClick() && playerInventory.getItemInMainHand().displayName().toString().contains("Frenzy")) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 200, 2));
@@ -87,19 +78,25 @@ public class Berserker implements Listener {
     }
 
     @EventHandler
-    public void castAbilityTwo(PlayerInteractEvent event) {
+    public void abilityTwo(PlayerInteractEvent event) {
+
+    }
+
+    @Override
+    public void ultimate(PlayerInteractEvent event) {
         Action action = event.getAction();
-        if(action.isLeftClick()) {return;}
         Player player = event.getPlayer();
-        if(!Siege.siegeClassUtil.getPlayersSiegeClass(player).equalsIgnoreCase("berserker")){return;}
+        if(!SiegeClassUtil.abilityCheck(player,action, SiegeClasses.BERSERKER)) {
+            return;
+        }
         PlayerInventory playerInventory = player.getInventory();
         Vector playerVector = player.getLocation().getDirection();
 
         if(action.isRightClick() && playerInventory.getItemInMainHand().displayName().toString().contains("Smash")) {
-            if(!this.playerJump.containsKey(player)) {
+            if(!playerJump.containsKey(player)) {
                 player.setVelocity(playerVector.multiply(1.5));
                 Bukkit.broadcast(Component.text("Added player to list"));
-                this.playerJump.put(player, System.currentTimeMillis());
+                playerJump.put(player, System.currentTimeMillis());
             }
         }
     }
@@ -114,23 +111,6 @@ public class Berserker implements Listener {
             //TODO ADD EFFECT AND DAMAGE CIRCLE
             this.playerJump.remove(player);
         }
-
-    }
-
-    public ArrayList<Entity> getPlayersJumping() {
-        return playersJumping;
-    }
-
-    public HashMap<Player,Long> getPlayerJump() {
-        return playerJump;
-    }
-
-    public void setPlayerJump(HashMap<Player, Long> playerJump) {
-        this.playerJump = playerJump;
-    }
-
-    public void setPlayersJumping(ArrayList<Entity> playersJumping) {
-        this.playersJumping = playersJumping;
     }
 }
 

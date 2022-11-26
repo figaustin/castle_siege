@@ -1,7 +1,6 @@
 package com.etsuni.siege.matches;
 
 import com.etsuni.siege.Siege;
-import com.etsuni.siege.teams.SiegeTeam;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -10,10 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.scheduler.BukkitTask;
+
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Match implements Listener {
 
@@ -22,6 +20,8 @@ public class Match implements Listener {
     private static Plugin pluginStatic = Siege.getPlugin(Siege.class);
 
     public static ArrayList<Match> matchList = new ArrayList<>();
+
+    public static Match currentMatch;
 
     private ArrayList<Player> playersInMatch;
 
@@ -38,36 +38,49 @@ public class Match implements Listener {
         this.playersInMatch = new ArrayList<>();
     }
 
-
+    /*
+    * Check if there is no current match happening, if there isn't start the map/gamemode voting process
+     */
     public static void gameLoop() {
         BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 
         scheduler.scheduleSyncRepeatingTask(pluginStatic, new Runnable() {
             @Override
             public void run() {
-                Bukkit.broadcast(Component.text(matchList.toString()));
-                if(matchList.isEmpty()) {
-                    matchStarter();
-                    Bukkit.broadcast(Component.text("Game looper found list empty, starting new match"));
+                if(matchList.isEmpty() && !MatchVoter.inProgress()) {
+                    MatchVoter.matchVote();
+
                 }
             }
         }, 100, 100);
 
     }
 
-    public static void matchStarter() {
+    /*
+    * Static method to be able to start a new match from anywhere without having to create new instance
+    * Could possibly make this not static.
+     */
+    public static void matchStarter(Gamemode gamemode) {
         Match match = new Match();
-        match.startMatch(new TDM());
+        currentMatch = match;
+        match.startMatch(gamemode);
     }
 
+
+    /*
+    * Actual method to start a new match
+    * Makes two new Runnables: one that runs the entire game length and will end the match, other one will repeat until the score
+    * of the match reaches the max points and will end the match.
+    * @param gamemode the gamemode that the match should be
+     */
     public void startMatch(Gamemode gamemode) {
         this.gamemode = gamemode;
+
         BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 
         matchList.add(this);
 
         inProgress = true;
-        Integer maxPoints = this.gamemode.getMaxPoints();
 
         matchId = scheduler.scheduleSyncDelayedTask(plugin, new Runnable() {
                 @Override
@@ -93,11 +106,10 @@ public class Match implements Listener {
         },10, 10);
     }
 
-    public Boolean pointsChecker() {
 
-        return gamemode.getAttack().getPoints() >= gamemode.getMaxPoints() ||
-                this.gamemode.getDefense().getPoints() >= this.gamemode.getMaxPoints();
-    }
+    /*
+    * Teleport all players back to spawn, remove all players from any lists/maps they are in
+     */
     public void endMatch() {
         if(inProgress) {
             inProgress = false;
@@ -112,6 +124,15 @@ public class Match implements Listener {
         matchList.remove(this);
     }
 
+    /*
+    * Method that is called in startMatch() to continously check teams' points to see if they are equal to the
+    * match's max points.
+     */
+    public Boolean pointsChecker() {
+
+        return gamemode.getAttack().getPoints() >= gamemode.getMaxPoints() ||
+                this.gamemode.getDefense().getPoints() >= this.gamemode.getMaxPoints();
+    }
 
     public void joinMatch(Player player) {
         if(inProgress) {

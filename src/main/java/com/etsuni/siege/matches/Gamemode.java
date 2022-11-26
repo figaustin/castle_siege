@@ -4,7 +4,6 @@ package com.etsuni.siege.matches;
 import com.etsuni.siege.teams.SiegeTeam;
 
 public class Gamemode {
-
     protected String gamemodeName;
 
     protected Integer maxPoints;
@@ -77,5 +76,17 @@ public class Gamemode {
 
     public void setDefense(SiegeTeam defense) {
         this.defense = defense;
+    }
+
+    public class TestingThis {
+
+        private final String idk;
+        public TestingThis() {
+            this.idk = "idk";
+        }
+
+        public String getIdk() {
+            return idk;
+        }
     }
 }

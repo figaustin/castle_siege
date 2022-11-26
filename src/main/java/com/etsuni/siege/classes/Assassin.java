@@ -1,6 +1,5 @@
 package com.etsuni.siege.classes;
 
-import com.etsuni.siege.Siege;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,23 +16,19 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Assassin implements Listener {
+public class Assassin extends SiegeClass implements Listener {
 
     public List<Player> invisiblePlayers = new ArrayList<>();
 
 
     public void giveKit(Player player) {
-        if(Siege.siegeClassUtil.playerClasses.containsKey(player)) {
-            Siege.siegeClassUtil.removePlayerFromSiegeClass(player);
-        }
-        Siege.siegeClassUtil.addPlayerToSiegeClass(player, "assassin");
         PlayerInventory playerInventory = player.getInventory();
         playerInventory.clear();
 
         ItemStack item = new ItemStack(Material.NETHERITE_SWORD);
         ItemMeta meta = item.getItemMeta();
 
-        meta.displayName(Component.text("Rapier"));
+        meta.displayName(Component.text("Dagger"));
         item.setItemMeta(meta);
         playerInventory.addItem(item);
 
@@ -57,18 +52,29 @@ public class Assassin implements Listener {
         playerInventory.addItem(item);
     }
 
+
+    @Override
+    public void abilityTwo(PlayerInteractEvent event) {
+
+    }
+
+    @Override
+    public void ultimate(PlayerInteractEvent event) {
+
+    }
+
     @EventHandler
-    public void castAbilityOne(PlayerInteractEvent event) {
+    public void abilityOne(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         Action action = event.getAction();
-        if(SiegeClassUtil.abilityDeny(player, action, "assassin") == false) {
+        if(!SiegeClassUtil.abilityCheck(player, action, SiegeClasses.ASSASSIN)) {
             return;
         }
         PlayerInventory playerInventory = player.getInventory();
         ItemStack mainHand = playerInventory.getItemInMainHand();
-        if(SiegeClassUtil.abilityCheck(action, mainHand, "Shadow Cloak")) {
-            if(!this.invisiblePlayers.contains(player)) {
-                this.invisiblePlayers.add(player);
+        if(SiegeClassUtil.itemCheck(action, mainHand, "Shadow Cloak")) {
+            if(!invisiblePlayers.contains(player)) {
+                invisiblePlayers.add(player);
                 player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 600, 4, false, false, true));
 
             }
@@ -80,8 +86,8 @@ public class Assassin implements Listener {
         Player player = event.getPlayer();
         Action action = event.getAction();
         if(action.isRightClick()) {return;}
-        if(action.isLeftClick() && this.invisiblePlayers.contains(player)) {
-            this.invisiblePlayers.remove(player);
+        if(action.isLeftClick() && invisiblePlayers.contains(player)) {
+            invisiblePlayers.remove(player);
             player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
 
         }

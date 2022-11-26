@@ -2,11 +2,19 @@ package com.etsuni.siege;
 
 import com.etsuni.siege.classes.*;
 import com.etsuni.siege.matches.Match;
+import com.etsuni.siege.matches.MatchVoter;
 import com.etsuni.siege.matches.TDM;
 import com.etsuni.siege.menus.MatchesMenu;
 import com.etsuni.siege.tests.Tests;
 import de.slikey.effectlib.EffectManager;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InvalidClassException;
 
 
 public final class Siege extends JavaPlugin {
@@ -24,6 +32,9 @@ public final class Siege extends JavaPlugin {
     public static EffectManager effectManager;
 
     public static MatchesMenu matchesMenu;
+
+    private File mapConfigFile;
+    private FileConfiguration mapConfig;
 
     @Override
     public void onEnable() {
@@ -46,6 +57,7 @@ public final class Siege extends JavaPlugin {
         Match.gameLoop();
 
         this.getCommand("siege").setExecutor(new Tests());
+        this.getCommand("vote").setExecutor(new MatchVoter());
         this.getServer().getPluginManager().registerEvents(new Knight(), this);
         this.getServer().getPluginManager().registerEvents(new Berserker(), this);
         this.getServer().getPluginManager().registerEvents(new Archer(), this);
@@ -54,6 +66,7 @@ public final class Siege extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new MatchesMenu(), this);
         this.getServer().getPluginManager().registerEvents(new TDM(), this);
 
+        createMapConfig();
 
         }
 
@@ -62,5 +75,23 @@ public final class Siege extends JavaPlugin {
         // Plugin shutdown logic
     }
 
+    public FileConfiguration getMapConfig() {
+        return this.mapConfig;
+    }
+
+    private void createMapConfig() {
+        mapConfigFile = new File(getDataFolder(), "maps.yml");
+        if(!mapConfigFile.exists()) {
+            mapConfigFile.getParentFile().mkdirs();
+            saveResource("maps.yml", false);
+        }
+
+        mapConfig = new YamlConfiguration();
+        try {
+            mapConfig.load(mapConfigFile);
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

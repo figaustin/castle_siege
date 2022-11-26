@@ -11,33 +11,14 @@ import java.util.HashMap;
 
 public class SiegeClassUtil {
 
-    public HashMap<Player, String> playerClasses = new HashMap<>();
-
     public SiegeClassUtil() {}
 
-    public void addPlayerToSiegeClass(Player player, String siegeClass) {
-        playerClasses.put(player, siegeClass);
+
+    public static Boolean abilityCheck(Player player, Action action, SiegeClasses siegeClass) {
+        return !action.isLeftClick() && PlayersClassList.getInstance().getPlayersClass(player).equals(siegeClass);
     }
 
-    public void removePlayerFromSiegeClass(Player player) {
-        playerClasses.remove(player);
-    }
-
-    public String getPlayersSiegeClass(Player player) {
-        String siegeClass = "";
-        if(playerClasses.containsKey(player)) {
-            siegeClass = playerClasses.get(player);
-        }
-        return siegeClass;
-    }
-
-    public static Boolean abilityDeny(Player player, Action action, String name) {
-        if(action.isLeftClick()) {return false;}
-        if(!Siege.siegeClassUtil.getPlayersSiegeClass(player).equalsIgnoreCase(name)){return false;}
-        return true;
-    }
-
-    public static Boolean abilityCheck(Action action, ItemStack item, String name) {
+    public static Boolean itemCheck(Action action, ItemStack item, String name) {
         return action.isRightClick() && item.displayName().toString().contains(name);
     }
 }
